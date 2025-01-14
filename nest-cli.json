@@ -1,0 +1,36 @@
+{
+  "monorepo": true,
+  "compilerOptions": {
+    "webpack": true
+  },
+  "projects": {
+    "template": {
+      "type": "application",
+      "root": "apps/template",
+      "entryFile": "main",
+      "sourceRoot": "apps/template/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/template/tsconfig.app.json"
+      }
+    },
+    "common": {
+      "type": "library",
+      "root": "libs/common",
+      "entryFile": "index",
+      "sourceRoot": "libs/common/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/common/tsconfig.lib.json",
+        "webpack": false
+      }
+    },
+    "template-mircoservice": {
+      "type": "application",
+      "root": "apps/template-mircoservice",
+      "entryFile": "main",
+      "sourceRoot": "apps/template-mircoservice/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/template-mircoservice/tsconfig.app.json"
+      }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: Int!
+  name: String!
+  email: String!
+  role: UserRole!
+}
+
+enum UserRole {
+  Business
+  User
+  Admin
+  ApiKey
+  Unknown
+}
+
+type Query {
+  user(id: Int!): User!
+}
+
+type Mutation {
+  createUser(email: String!, name: String!): User!
+}
+
+type Subscription {
+  userChange(id: Int!): User
+  userCreated: User
+}
