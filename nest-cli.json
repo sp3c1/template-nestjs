@@ -4,13 +4,13 @@
     "webpack": true
   },
   "projects": {
-    "template": {
+    "api": {
       "type": "application",
-      "root": "apps/template",
+      "root": "apps/api",
       "entryFile": "main",
-      "sourceRoot": "apps/template/src",
+      "sourceRoot": "apps/api/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/template/tsconfig.app.json"
+        "tsConfigPath": "apps/api/tsconfig.app.json"
       }
     },
     "common": {
@@ -23,13 +23,13 @@
         "webpack": false
       }
     },
-    "template-mircoservice": {
+    "worker": {
       "type": "application",
-      "root": "apps/template-mircoservice",
+      "root": "apps/worker",
       "entryFile": "main",
-      "sourceRoot": "apps/template-mircoservice/src",
+      "sourceRoot": "apps/worker/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/template-mircoservice/tsconfig.app.json"
+        "tsConfigPath": "apps/worker/tsconfig.app.json"
       }
     }
   }

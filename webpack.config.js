@@ -4,17 +4,17 @@ const nodeExternals = require('webpack-node-externals');
 
 // ** APPS HERE
 const projectsConfig = {
-  'template': {
-    root: 'apps/template',
+  'api': {
+    root: 'apps/api',
     entryFile: 'main',
-    tsConfigPath: 'apps/template/tsconfig.app.json',
-    outputPath: 'dist/apps/template',
+    tsConfigPath: 'apps/api/tsconfig.app.json',
+    outputPath: 'dist/apps/api',
   },
-  'template-mircoservice': {
-    root: 'apps/template-mircoservice',
+  'worker': {
+    root: 'apps/worker',
     entryFile: 'main',
-    tsConfigPath: 'apps/template-mircoservice/tsconfig.app.json',
-    outputPath: 'dist/apps/template-mircoservice',
+    tsConfigPath: 'apps/worker/tsconfig.app.json',
+    outputPath: 'dist/apps/worker',
   },
 };
 
