@@ -1,11 +1,7 @@
-import {
-  CoreModule,
-  User,
-} from '@app/common/coreModels';
-import {
-  forwardRef,
-  Module,
-} from '@nestjs/common';
+import { AmqModule } from '@app/common/amq';
+import { CoreModule, User } from '@app/common/coreModels';
+import { RmqModule } from '@app/common/rmq';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { DbModule } from '../../internal/db/db.module';
@@ -20,6 +16,8 @@ import { UserService } from './user.service';
     forwardRef(() => PubSubModule),
     forwardRef(() => DbModule),
     forwardRef(() => CoreModule),
+    forwardRef(() => RmqModule),
+    forwardRef(() => AmqModule),
     TypeOrmModule.forFeature([User]),
   ],
   controllers: [],

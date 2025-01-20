@@ -1,11 +1,8 @@
+import { IAmqConfig } from '@app/common/amq/types/config';
+import { IRmqConfig } from '@app/common/rmq/types/config';
 import { Logger } from '@nestjs/common';
 
-import {
-  IAppConfig,
-  IAuthConfig,
-  IDBConfig,
-  IRedisConfig,
-} from './load/config.interface';
+import { IAppConfig, IAuthConfig, IDBConfig, IRedisConfig } from './load/config.interface';
 
 export async function loadEnvVarConfig() {
   Logger.log(`Config loaded from ENV variables`, { context: 'ConfigLoader' });
@@ -36,6 +33,20 @@ export async function loadEnvVarConfig() {
   appConfig.REDIS.PORT = Number(process.env.REDIS_PORT) ?? 6379;
   appConfig.REDIS.PASSWORD = process.env.REDIS_PASSWORD ?? '';
   appConfig.REDIS.NAMESPACE = process.env.REDIS_NAMESPACE ?? 'default';
+
+  appConfig.RMQ = <IRmqConfig>{};
+  appConfig.RMQ.HOST = process.env.RMQ_HOST ?? '';
+  appConfig.RMQ.PROTOCOL = process.env.RMQ_PROTOCOL ?? '';
+  appConfig.RMQ.PORT = Number(process.env.RMQ_PORT);
+  appConfig.RMQ.PASSWORD = process.env.RMQ_PASSWORD ?? '';
+  appConfig.RMQ.USERNAME = process.env.RMQ_USERNAME ?? '';
+
+  appConfig.AMQ = <IAmqConfig>{};
+  appConfig.AMQ.HOST = process.env.AMQ_HOST ?? '';
+  appConfig.AMQ.PORT = Number(process.env.AMQ_PORT);
+  appConfig.AMQ.PASSWORD = process.env.AMQ_PASSWORD ?? '';
+  appConfig.AMQ.USERNAME = process.env.AMQ_USERNAME ?? '';
+  appConfig.AMQ.TRANSPORT = <any>process.env.AMQ_TRANSPORT || 'tcp';
 
   return { app: appConfig };
 }

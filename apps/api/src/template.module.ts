@@ -1,5 +1,7 @@
 import { UploadScalar } from '@app/common';
+import { AmqModule } from '@app/common/amq';
 import { CoreModule } from '@app/common/coreModels';
+import { RmqModule } from '@app/common/rmq';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -19,6 +21,8 @@ import { RestModule } from './rest/rest.module';
     DbModule,
     RedisClientModule,
     PubSubModule,
+    RmqModule,
+    AmqModule,
 
     CoreModule,
 

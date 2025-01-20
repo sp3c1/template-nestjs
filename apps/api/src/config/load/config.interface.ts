@@ -1,8 +1,13 @@
+import { IAmqConfig } from '@app/common/amq/types/config';
+import { IRmqConfig } from '@app/common/rmq/types/config';
+
 export interface IAppConfig {
   ACTIVE_PROFILE: string;
   DB: IDBConfig;
   REDIS: IRedisConfig;
   AUTH: IAuthConfig;
+  RMQ: IRmqConfig;
+  AMQ: IAmqConfig;
 }
 
 export interface IRedisConfig {

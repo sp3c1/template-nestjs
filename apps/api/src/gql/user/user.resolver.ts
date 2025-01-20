@@ -2,6 +2,7 @@ import { createWriteStream } from 'fs';
 import { PubSubEngine } from 'graphql-subscriptions';
 import { FileUpload } from 'graphql-upload-ts';
 import { join } from 'path';
+import { ReceiverOptions, SenderOptions } from 'rhea';
 
 import {
   FieldMap,
@@ -10,8 +11,10 @@ import {
   UploadScalar,
   withCancel,
 } from '@app/common';
+import { AckAmq, AmqPublish, AmqService, AmqSubscribe } from '@app/common/amq';
 import { ProjectionService, User } from '@app/common/coreModels';
-import { Inject } from '@nestjs/common';
+import { AckRmq, RmqPublish, RmqService, RmqSubscribe } from '@app/common/rmq';
+import { Inject, Logger } from '@nestjs/common';
 import {
   Args,
   ArgsType,
@@ -56,7 +59,9 @@ export class UserResolver {
   constructor(
     @Inject('PUB_SUB') private pubSub: PubSubEngine,
     private projection: ProjectionService,
-    private userService: UserService
+    private userService: UserService,
+    private amqService: AmqService,
+    private rmqService: RmqService
   ) {}
 
   @Query((_) => User)
@@ -143,5 +148,62 @@ export class UserResolver {
 
     // ---
     return true;
+  }
+
+  @Query((_) => Boolean)
+  @AmqPublish({
+    sender: {
+      name: 'send-email.sender',
+      target: {
+        address: 'send-email.queue',
+        durable: 2,
+        expiry_policy: 'never',
+      },
+    } as SenderOptions,
+  })
+  async sendEmail() {
+    await this.amqService.send('send-email.sender', { email: `email@email` });
+    return true;
+  }
+
+  @AmqSubscribe({
+    receiver: {
+      name: 'send-email.receiver',
+      source: {
+        // A queue declaration
+        address: 'send-email.queue',
+        durable: 2,
+        expiry_policy: 'never',
+      },
+    } as ReceiverOptions,
+  })
+  async processSendEmail(msg: any, delivery: AckAmq) {
+    try {
+      Logger.log(`Message received`, msg);
+      delivery.accept();
+    } catch (error) {
+      Logger.error(error.message);
+    }
+  }
+
+  @Query((_) => Boolean)
+  @RmqPublish({
+    routingKey: 'send-email',
+  })
+  async sendEmailRmq() {
+    await this.rmqService.send({ routingKey: 'send-email' }, { email: `email@email` });
+    return true;
+  }
+
+  @RmqSubscribe({
+    queue: 'send-email',
+  })
+  async processSendEmailRmq(msg: any, delivery: AckRmq) {
+    try {
+      Logger.log(`Message received`, msg);
+      delivery.ack();
+    } catch (error) {
+      Logger.error(error.message);
+    }
   }
 }

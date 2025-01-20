@@ -28,6 +28,8 @@ scalar Upload
 
 type Query {
   user(id: Int!): User!
+  sendEmail: Boolean!
+  sendEmailRmq: Boolean!
 }
 
 type Mutation {

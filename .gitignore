@@ -57,3 +57,12 @@ lerna-debug.log*
 
 # Sentry Config File
 .env.sentry-build-plugin
+
+
+# AMQ
+.amq/*
+.amq/activemq.example.xml
+.amq/data
+
+# RMQ
+.rmq/*
