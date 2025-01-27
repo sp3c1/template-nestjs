@@ -1,5 +1,5 @@
 {
-  "name": "template-nest-js",
+  "name": "loadsure",
   "version": "0.0.0",
   "description": "",
   "author": "bspecjalny@gmail.com",
@@ -11,15 +11,9 @@
     "build:all": "npm run build:libs:all && npm run build:apps:all",
     "build:libs:all": "nest build common",
     "build:libs:all:watch": "nodemon",
-    "build:apps:api": "nest build api",
-    "start:apps:api": "nest start api --watch",
-    "start:apps:api:watch": "nest start api --watch",
-    "build:apps:worker": "nest build worker",
-    "start:apps:worker": "nest start worker --watch",
-    "start:apps:worker:watch": "nest start worker --watch",
-    "test": "jest",
-    "test:unit": "npm run test:unit:template",
-    "test:unit:template": "jest --config ./apps/template/test/jest-unit.json --passWithNoTests"
+    "start:apps:sequencess": "nest start sequencess --watch",
+    "test:sequencess": "jest ./apps/sequencess/src/sequencess.service.spec.ts",
+    "test:sequencess:watch": "jest ./apps/sequencess/src/sequencess.service.spec.ts --watch"
   },
   "dependencies": {
     "@apollo/server": "^4.10.2",

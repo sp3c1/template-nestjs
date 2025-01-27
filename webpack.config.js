@@ -4,17 +4,11 @@ const nodeExternals = require('webpack-node-externals');
 
 // ** APPS HERE
 const projectsConfig = {
-  'api': {
-    root: 'apps/api',
+  'sequencess': {
+    root: 'apps/sequencess',
     entryFile: 'main',
-    tsConfigPath: 'apps/api/tsconfig.app.json',
-    outputPath: 'dist/apps/api',
-  },
-  'worker': {
-    root: 'apps/worker',
-    entryFile: 'main',
-    tsConfigPath: 'apps/worker/tsconfig.app.json',
-    outputPath: 'dist/apps/worker',
+    tsConfigPath: 'apps/sequencess/tsconfig.app.json',
+    outputPath: 'dist/apps/sequencess',
   },
 };
 

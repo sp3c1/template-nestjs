@@ -4,15 +4,6 @@
     "webpack": true
   },
   "projects": {
-    "api": {
-      "type": "application",
-      "root": "apps/api",
-      "entryFile": "main",
-      "sourceRoot": "apps/api/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/api/tsconfig.app.json"
-      }
-    },
     "common": {
       "type": "library",
       "root": "libs/common",
@@ -23,13 +14,13 @@
         "webpack": false
       }
     },
-    "worker": {
+    "sequencess": {
       "type": "application",
-      "root": "apps/worker",
+      "root": "apps/sequencess",
       "entryFile": "main",
-      "sourceRoot": "apps/worker/src",
+      "sourceRoot": "apps/sequencess/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/worker/tsconfig.app.json"
+        "tsConfigPath": "apps/sequencess/tsconfig.app.json"
       }
     }
   }
