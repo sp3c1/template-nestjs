@@ -4,12 +4,12 @@ import { graphqlUploadExpress } from 'graphql-upload-ts';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-import { TemplateModule } from './template.module';
+import { ApiModule } from './api.module';
 
 export async function bootstrap(path: string) {
   require('dotenv').config({ ...(path && { path }), override: true });
 
-  const app = await NestFactory.create(TemplateModule, {
+  const app = await NestFactory.create(ApiModule, {
     bodyParser: true,
     cors: {
       origin: '*',

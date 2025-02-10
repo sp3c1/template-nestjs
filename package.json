@@ -17,9 +17,7 @@
     "build:apps:worker": "nest build worker",
     "start:apps:worker": "nest start worker --watch",
     "start:apps:worker:watch": "nest start worker --watch",
-    "test": "jest",
-    "test:unit": "npm run test:unit:template",
-    "test:unit:template": "jest --config ./apps/template/test/jest-unit.json --passWithNoTests"
+    "test": "jest"
   },
   "dependencies": {
     "@apollo/server": "^4.10.2",

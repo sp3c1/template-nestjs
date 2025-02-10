@@ -41,7 +41,7 @@ import { RestModule } from './rest/rest.module';
   controllers: [],
   providers: [UploadScalar],
 })
-export class TemplateModule {
+export class ApiModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(ContextFillMiddleware).forRoutes('/api/*');
   }

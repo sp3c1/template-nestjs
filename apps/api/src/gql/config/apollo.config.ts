@@ -57,7 +57,7 @@ export const apolloConfigFactory = async (configService: ConfigService) =>
     debug: !isProd,
     playground: false,
     introspection: !isProd,
-    autoSchemaFile: join(process.cwd(), './schema/template.gql'),
+    autoSchemaFile: join(process.cwd(), './schema/api.gql'),
     plugins,
     path: `/graphql`,
     uploads: {
