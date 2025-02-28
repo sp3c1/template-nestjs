@@ -1,7 +1,17 @@
-import { Channel, connect, Connection, ConsumeMessage } from 'amqplib';
+import {
+  Channel,
+  connect,
+  Connection,
+  ConsumeMessage,
+} from 'amqplib';
 
 import { DiscoveryService } from '@golevelup/nestjs-discovery';
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import {
@@ -16,7 +26,8 @@ import { IRmqConfig } from './types/config';
 @Injectable()
 export class RmqService implements OnModuleInit, OnModuleDestroy {
   private connection: Connection;
-  private channel: Channel;
+  private channel: Channel; // publishing
+  private channels: { [key: string]: Channel } = {}; // consuming
   private receiverHandlers: Record<
     string,
     (msg: any, channel: AckRmq, rawMsg: ConsumeMessage) => Promise<void> | void
@@ -83,16 +94,21 @@ export class RmqService implements OnModuleInit, OnModuleDestroy {
         `RMQ: Binding handler ${discoveredMethod.parentClass.name}.${discoveredMethod.methodName} to queue ${queue}`
       );
 
+      this.channels[queue] = await this.connection.createChannel();
+      const ref = this.channels[queue];
       // Bind method to instance and store in handlers map
       this.receiverHandlers[queue] = discoveredMethod.handler.bind(
         discoveredMethod.parentClass.instance
       );
 
       // Ensure queue exists (create if not exists)
-      await this.channel.assertQueue(queue, { durable: true });
+      await ref.assertQueue(queue, { durable: true });
+
+      // prefetch more?
+      ref.prefetch(Math.max(meta?.prefetch || 0, 3));
 
       // Start consuming messages
-      await this.channel.consume(
+      await ref.consume(
         queue,
         async (msg: ConsumeMessage | null) => {
           if (!msg) {
@@ -106,22 +122,22 @@ export class RmqService implements OnModuleInit, OnModuleDestroy {
               await Promise.resolve(
                 handler(
                   parsed,
-                  { ack: () => this.channel.ack(msg), nack: () => this.channel.mack(msg) },
+                  { ack: () => ref.ack(msg), nack: () => ref.nack(msg) },
                   msg
                 )
               );
               // Manual ack after successful handling
-              // this.channel.ack(msg);
+              // ref.ack(msg);
             } else {
               Logger.warn(`No handler for queue ${queue}`);
-              this.channel.nack(msg, false, false); // Reject message
+              ref.nack(msg, false, false); // Reject message
             }
           } catch (error) {
             Logger.error('Error processing message', error);
-            this.channel.nack(msg, false, false); // Reject message without requeue
+            ref.nack(msg, false, false); // Reject message without requeue
           }
         },
-        { noAck: false }
+        { noAck: false, }
       ); // Ensure manual acknowledgments
     }
   }
@@ -135,7 +151,7 @@ export class RmqService implements OnModuleInit, OnModuleDestroy {
       const { exchange, routingKey } = meta;
       Logger.log(
         `RMQ: Found publisher ${discoveredMethod.parentClass.name}.${discoveredMethod.methodName} ` +
-          `for exchange: ${exchange ?? 'default'}, routingKey: ${routingKey}`
+        `for exchange: ${exchange ?? 'default'}, routingKey: ${routingKey}`
       );
 
       // If an exchange is specified, assert it exists.
@@ -146,6 +162,8 @@ export class RmqService implements OnModuleInit, OnModuleDestroy {
         } catch (error) {
           Logger.error(`RMQ: Failed to assert exchange ${exchange}`, error);
         }
+      } else if (routingKey) {
+        await this.channel.assertQueue(routingKey, { durable: true, }).catch();
       }
 
       // Store the publisher configuration in the map using the routingKey as the key
@@ -172,8 +190,9 @@ export class RmqService implements OnModuleInit, OnModuleDestroy {
   ) {
     try {
       const buffer = Buffer.from(JSON.stringify(message));
-      this.channel.publish(exchange, routingKey, buffer);
       Logger.log(`RMQ: Message sent to ${routingKey}`, message);
+
+      this.channel.sendToQueue(routingKey, buffer, { persistent: true, deliveryMode: 2 });
     } catch (error) {
       Logger.error('RMQ: Failed to send message', error);
     }

@@ -4,7 +4,25 @@
 
 There is decorator `RmqPublish` that creates a published AMQ object. This decorator can be duplicated in other places that need publishers. Only one publisher will be created per topic/queue. `
 
-```
+```ts
+@Injectable()
+export class IngredientCsvMircoServiceService {
+    constructor(
+        private readonly publisher: RmqService
+    ) { }
+
+    @RmqPublish({
+        routingKey: 'queue'
+    })
+    async publish(){
+        await this.publisher.send({ routingKey: 'queue' }, {
+          requestId: message.requestId,
+          ingredientName: line.name,
+          supplierName: line.supplier
+        });
+    }
+
+}
 
 ```
 
@@ -12,7 +30,20 @@ There is decorator `RmqPublish` that creates a published AMQ object. This decora
 
 Use new decorator `@RmqSubscribe` in provider to listen to messages from queue/topic.
 
-```
+```ts
+@Injectable()
+export class IngredientCsvMircoServiceService {
+    constructor(
+        private readonly publisher: RmqService
+    ) { }
+
+    @RmqSubscribe({
+        queue: 'queue'
+    })
+    async consume(message, delivery: AckRmq){
+       ....
+    }
+}
 
 ```
 
@@ -30,4 +61,14 @@ RMQ_PORT=5673
 RMQ_USERNAME=admin
 RMQ_PASSWORD=admin
 RMQ_PROTOCOL=amqp # or 'amqps'
+```
+
+
+## Nots
+
+Require
+
+```
+amqplib
+@golevelup/nestjs-discovery
 ```

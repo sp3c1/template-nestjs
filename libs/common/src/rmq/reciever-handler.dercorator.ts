@@ -1,7 +1,11 @@
-import { applyDecorators, SetMetadata } from '@nestjs/common';
+import {
+  applyDecorators,
+  SetMetadata,
+} from '@nestjs/common';
 
 export interface RmqSubscribeOpts {
-  queue?: string;
+  queue: string;
+  prefetch?: number; // will default to 1
 }
 
 export const RMQ_RECEIVER_HANDLER = Symbol('RMQ_RECEIVER_HANDLER');

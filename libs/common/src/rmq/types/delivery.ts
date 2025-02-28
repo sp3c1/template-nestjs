@@ -1,4 +1,4 @@
 export interface AckRmq {
-  ack: () => {};
-  nack: () => {};
+  ack: () => void;
+  nack: () => void;
 }
